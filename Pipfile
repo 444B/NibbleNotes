@@ -9,6 +9,11 @@ pandas = "*"
 seaborn = "*"
 matplotlib = "*"
 watchdog = "*"
+openai = "*"
+llama-index = "*"
+llama-index-llms-openai = "*"
+nltk = "*"
+pypdf = "*"
 
 [dev-packages]
 

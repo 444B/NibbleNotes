@@ -106,11 +106,10 @@ def visualize_data(meal_data, symptoms_data):
     ax.grid(True)
     st.pyplot(fig)
 
-def ai_consultation():
-    st.header("AI Dietician")
+def ai_investigator():
+    st.header("AI Investigator")
     if st.checkbox("run code?"):
         import openai
-        import streamlit as st
         from llama_index.llms.openai import OpenAI
         try:
             from llama_index import (Document, ServiceContext,
@@ -122,10 +121,9 @@ def ai_consultation():
 
         # st.set_page_config(page_title="Chat with the Streamlit docs, powered by LlamaIndex", page_icon="🦙", layout="centered", initial_sidebar_state="auto", menu_items=None)
         openai.api_key = st.secrets.openai_key
-        st.title("Chat with this websites Blog posts, powered by LlamaIndex")                
         if "messages" not in st.session_state.keys(): # Initialize the chat messages history
             st.session_state.messages = [
-                {"role": "assistant", "content": "Ask me a question about this websites blog posts!"}
+                {"role": "assistant", "content": "Ask me a question about the meals eaten or any symptoms!"}
             ]
 
         @st.cache_resource(show_spinner=False)
@@ -135,7 +133,7 @@ def ai_consultation():
                 docs = reader.load_data()
                 # llm = OpenAI(model="gpt-3.5-turbo", temperature=0.5, system_prompt="You are an expert o$
                 # index = VectorStoreIndex.from_documents(docs)
-                service_context = ServiceContext.from_defaults(llm=OpenAI(model="gpt-3.5-turbo", temperature=0.5, system_prompt="You answer questions on post content and highlight interesting points - do not hallucinate posts or opinions."))
+                service_context = ServiceContext.from_defaults(llm=OpenAI(model="gpt-3.5-turbo", temperature=0.5, system_prompt="You are an expert in statistics, meals and allergies. You answer questions base on two datasets: food entries and symptoms. Do not claim anything that can not be backed up by statistics or data."))
                 index = VectorStoreIndex.from_documents(docs, service_context=service_context)
                 return index
 
@@ -165,7 +163,7 @@ def ai_consultation():
 
 # UI
 def main():
-        tab1, tab2, tab3, tab4= st.tabs(["Meal Entry Form", "Symptoms Logging", "Data Visualization and Analysis"])
+        tab1, tab2, tab3, tab4= st.tabs(["Meal Entry Form", "Symptoms Logging", "Data Visualization and Analysis", "AI Investigator"])
         with tab1:
             log_meal()
         with tab2:
@@ -175,7 +173,7 @@ def main():
             symptoms_data = pd.read_csv("data/symptoms.csv")
             visualize_data(meal_data, symptoms_data)
         with tab4:
-            ai_consultation()
+            ai_investigator()
 
 if __name__ == "__main__":
     main()

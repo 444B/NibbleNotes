@@ -18,6 +18,11 @@ def log_meal():
     meal_type = st.selectbox("Meal Type", ["Breakfast", "Brunch", "Lunch", "Dinner", "Snack"])
     food_consumed = st.text_input("Food Consumed")
     optional_notes = st.text_area("Optional Notes")
+    
+    # Sanitize inputs
+    food_consumed = food_consumed.replace(',', '')
+    optional_notes = optional_notes.replace(',', '')
+    
     if st.button("Log Meal"):
         if optional_notes.strip() == "":
             optional_notes = None
@@ -34,6 +39,10 @@ def log_symptom():
     symptom_type = st.selectbox("Symptom Type", ["Stomachache", "Headache", "Nausea", "Fatigue", "Other"])
     severity = st.slider("Severity", min_value=1, max_value=10)
     symptom_notes = st.text_area("Symptom Notes")
+    
+    # Sanitize input
+    symptom_notes = symptom_notes.replace(',', '')
+    
     if st.button("Log Symptom"):
         if symptom_notes.strip() == "":
             symptom_notes = None

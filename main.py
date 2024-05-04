@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime
+import os
 
 def create_date_time_input(label):
     date_key = label + "_date"
@@ -9,23 +10,23 @@ def create_date_time_input(label):
     time = st.time_input(label + " Time", key=time_key)
     return date, time
 
-def log_meal(meal_data):
+def log_meal():
     st.subheader("Meal Entry")
     meal_date, meal_time = create_date_time_input("Meal")
     meal_type = st.selectbox("Meal Type", ["Breakfast", "Lunch", "Dinner", "Snack"])
-    food = st.text_input("Food Consumed")
-    notes = st.text_area("Meal Notes")
+    food_consumed = st.text_input("Food Consumed")
+    optional_notes = st.text_area("Optional Notes")
     if st.button("Log Meal"):
-        if notes.strip() == "":
-            notes = None
+        if optional_notes.strip() == "":
+            optional_notes = None
         datetime_entry = datetime.combine(meal_date, meal_time)
-        new_entry = {'datetime': pd.Timestamp(datetime_entry), 'meal_type': meal_type, 'food': food, 'notes': notes}
-        meal_data = pd.concat([meal_data, pd.DataFrame([new_entry], columns=meal_data.columns)], ignore_index=True)
-        meal_data.to_csv("food_entries.csv", index=False)
+        new_entry = {'timestamp': datetime_entry, 'meal_type': meal_type, 'food_consumed': food_consumed, 'optional_notes': optional_notes}
+        new_entry_df = pd.DataFrame([new_entry])
+        new_entry_df.to_csv("food_entries.csv", mode='a', header=not os.path.exists("food_entries.csv"), index=False)
         st.success("Meal logged successfully!")
-    return meal_data
 
-def log_symptom(symptoms_data):
+
+def log_symptom():
     st.subheader("Symptoms Logging")
     symptom_date, symptom_time = create_date_time_input("Symptom")
     symptom_type = st.selectbox("Symptom Type", ["Stomachache", "Headache", "Nausea", "Fatigue", "Other"])
@@ -35,11 +36,10 @@ def log_symptom(symptoms_data):
         if symptom_notes.strip() == "":
             symptom_notes = None
         datetime_entry = datetime.combine(symptom_date, symptom_time)
-        new_symptom = {'datetime': pd.Timestamp(datetime_entry), 'symptom_type': symptom_type, 'severity': severity, 'notes': symptom_notes}
-        symptoms_data = pd.concat([symptoms_data, pd.DataFrame([new_symptom], columns=symptoms_data.columns)], ignore_index=True)
-        symptoms_data.to_csv("symptoms.csv", index=False)
+        new_symptom = {'timestamp': datetime_entry, 'symptom_type': symptom_type, 'severity': severity, 'notes': symptom_notes}
+        new_symptom_df = pd.DataFrame([new_symptom])
+        new_symptom_df.to_csv("symptoms.csv", mode='a', header=not os.path.exists("symptoms.csv"), index=False)
         st.success("Symptom logged successfully!")
-    return symptoms_data
 
 # Data Visualization and Analysis
 def visualize_data(meal_data, symptoms_data):
@@ -58,9 +58,9 @@ def main():
     tab1, tab2, tab3 = st.tabs(["Meal Entry Form", "Symptoms Logging", "Data Visualization and Analysis"])
 
     with tab1:
-        meal_data = log_meal(meal_data)
+        meal_data = log_meal()
     with tab2:
-        symptoms_data = log_symptom(symptoms_data)
+        symptoms_data = log_symptom()
     with tab3:
         visualize_data(meal_data, symptoms_data)
 

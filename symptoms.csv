@@ -1,7 +1,2 @@
-date,symptom_type,severity,notes,datetime
-2024-05-02 22:14,Stomachache,7,Felt stomachache after dinner,
-2024-05-06 09:05,Fatigue,4,Felt tired and fatigued in the morning,
-2024-05-11 09:45,Nausea,6,Felt nauseous in the morning,
-2024-05-20 21:53,Stomachache,7,Stomachache after dinner,
-2024-05-28 08:46,Nausea,7,Severe nausea in the morning,
-,Stomachache,1,test2,2024-05-04 09:45:00
+timestamp,symptom_type,severity,notes
+2024-05-04 10:22:00,Stomachache,1,symp test

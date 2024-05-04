@@ -107,7 +107,8 @@ def visualize_data(meal_data, symptoms_data):
     st.pyplot(fig)
 
 def ai_investigator():
-    st.header("AI Investigator")
+    st.header("AI Investigator (Work In Progress)")
+    st.write("Still under development, it will probably give innacurate answers :)")
     if st.checkbox("run code?"):
         import openai
         from llama_index.llms.openai import OpenAI
@@ -163,7 +164,7 @@ def ai_investigator():
 
 # UI
 def main():
-        tab1, tab2, tab3, tab4= st.tabs(["Meal Entry Form", "Symptoms Logging", "Data Visualization and Analysis", "AI Investigator"])
+        tab1, tab2, tab3, tab4= st.tabs(["Meal Entry Form", "Symptoms Logging", "Data Visualization and Analysis", "AI Investigator (WIP)"])
         with tab1:
             log_meal()
         with tab2:

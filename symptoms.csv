@@ -1,2 +1,26 @@
 timestamp,symptom_type,severity,notes
-2024-05-04 10:22:00,Stomachache,1,symp test
+2024-04-03 09:00:00,Headache,5,Mild headache after breakfast
+2024-04-03 12:45:00,Headache,6,Stomach discomfort after lunch
+2024-04-03 19:30:00,Nausea,4,Slight queasiness after dinner
+2024-04-05 08:30:00,Nausea,7,Feeling tired in the morning
+2024-04-05 13:15:00,Headache,6,Headache developing in the afternoon
+2024-04-05 18:45:00,Stomachache,5,Mild stomach discomfort in the evening
+2024-04-08 07:45:00,Nausea,6,Feeling nauseous in the morning
+2024-04-08 12:30:00,Nausea,8,Extreme tiredness after lunch
+2024-04-08 19:15:00,Headache,7,Intense headache in the evening
+2024-04-11 09:00:00,Stomachache,4,Slight stomach discomfort after breakfast
+2024-04-11 13:45:00,Nausea,5,Queasiness after midday snack
+2024-04-11 18:30:00,Fatigue,6,Feeling tired towards the end of the day
+2024-04-14 08:30:00,Headache,6,Mild headache in the morning
+2024-04-14 12:15:00,Headache,7,Stomach pain after lunch
+2024-04-14 19:00:00,Nausea,5,Slight nausea after dinner
+2024-04-17 09:30:00,Fatigue,8,Extreme tiredness in the morning
+2024-04-17 14:15:00,Headache,7,Intense headache after midday
+2024-04-17 18:45:00,Stomachache,6,Abdominal discomfort in the evening
+2024-04-20 08:45:00,Nausea,4,Feeling queasy after breakfast
+2024-04-20 13:30:00,Fatigue,5,Tiredness after lunch
+2024-04-20 19:15:00,Headache,6,Headache developing in the evening
+2024-04-23 09:15:00,Stomachache,5,Mild stomach discomfort after breakfast
+2024-04-23 14:00:00,Nausea,6,Queasiness in the afternoon
+2024-04-23 18:45:00,Nausea,7,Feeling tired in the evening
+2024-04-26 08:45:00,Headache,5,Mild headache in the morning

@@ -211,7 +211,12 @@ def ai_investigator():
 
 # UI
 def main():
-        tab1, tab2, tab3, tab4, tab5 = st.tabs(["Meal Entry Form", "Symptoms Logging", "Emotion Logging", "Data Visualization and Analysis", "AI Investigator (WIP)"])
+        tab1, tab2, tab3, tab4, tab5 = st.tabs([
+            "Meal Entry Form", 
+            "Symptoms Logging", 
+            "Emotion Logging", 
+            "Data Visualization and Analysis", 
+            "AI Investigator (WIP)"])
         with tab1:
             log_meal()
         with tab2:

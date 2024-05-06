@@ -68,6 +68,8 @@ def log_emotion():
     emotion_type = st.selectbox("Emotion Type", ["Anxious", "Depressed", "Overwhelmed", "Bored", "Doom scrolling", "Other"])
     severity = st.slider("Intensity", min_value=1, max_value=10)
     emotion_notes = st.text_area("Emotion Notes")
+    # Add a color picker to represent emotions
+    emotion_color = st.color_picker("Optional - Pick a color to represent this emotion", "#FF6347")  # default color: Tomato
 
     # Sanitize input
     emotion_notes = emotion_notes.replace(',', '')
@@ -76,16 +78,23 @@ def log_emotion():
         if emotion_notes.strip() == "":
             emotion_notes = None
         datetime_entry = datetime.combine(emotion_date, emotion_time)
-        new_emotion= {'timestamp': datetime_entry, 'emotion_type': emotion_type, 'severity': severity, 'notes': emotion_notes}
+        new_emotion = {
+            'timestamp': datetime_entry,
+            'emotion_type': emotion_type,
+            'severity': severity,
+            'color': emotion_color,  # Add the chosen color to the data
+            'notes': emotion_notes
+
+        }
         new_emotion_df = pd.DataFrame([new_emotion])
         new_emotion_df.to_csv("data/emotions.csv", mode='a', header=not os.path.exists("data/emotions.csv"), index=False)
         st.success("Emotion logged successfully!")
+        
 
     # Download button
     emotion_data = pd.read_csv("data/emotions.csv")
     st.download_button(label="Download Emotion Data as CSV", data=emotion_data.to_csv(index=False), file_name="emotions.csv")
     st.dataframe(emotion_data)
-
 
 # Data Visualization and Analysis
 def visualize_data(meal_data, symptoms_data, emotions_data):

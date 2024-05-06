@@ -52,8 +52,29 @@ def log_symptom():
         new_symptom_df.to_csv("data/symptoms.csv", mode='a', header=not os.path.exists("data/symptoms.csv"), index=False)
         st.success("Symptom logged successfully!")
 
+
+def log_emotion():
+    st.subheader("Emotion Logging")
+    emotion_date, emotion_time = create_date_time_input("Emotion")
+    emotion_type = st.selectbox("Emotion Type", ["Anxious", "Depressed", "Overwhelmed", "Bored", "Doom scrolling", "Other"])
+    severity = st.slider("Intensity", min_value=1, max_value=10)
+    emotion_notes = st.text_area("Emotion Notes")
+
+    # Sanitize input
+    emotion_notes = emotion_notes.replace(',', '')
+
+    if st.button("Log Emotion"):
+        if emotion_notes.strip() == "":
+            emotion_notes = None
+        datetime_entry = datetime.combine(emotion_date, emotion_time)
+        new_emotion= {'timestamp': datetime_entry, 'emotion_type': emotion_type, 'severity': severity, 'notes': emotion_notes}
+        new_emotion_df = pd.DataFrame([new_emotion])
+        new_emotion_df.to_csv("data/emotions.csv", mode='a', header=not os.path.exists("data/emotions.csv"), index=False)
+        st.success("Emotion logged successfully!")
+
+
 # Data Visualization and Analysis
-def visualize_data(meal_data, symptoms_data):
+def visualize_data(meal_data, symptoms_data, emotions_data):
     st.subheader("Data Visualization and Analysis")
     
     # Meal Data Analysis
@@ -89,6 +110,12 @@ def visualize_data(meal_data, symptoms_data):
     ax.set_ylabel("Count")
     ax.set_title("Distribution of Symptom Types")
     st.pyplot(fig)
+
+    # Emotion Data Analysis
+    st.write("Emotions Data")
+    st.write(emotions_data.describe())  # Basic statistics
+    st.write("Emotion Types Distribution")
+    st.write(emotions_data['emotion_type'].value_counts())  # Count of symptom types
 
     # Time-Series Analysis
     st.write("Time-Series Analysis")
@@ -164,16 +191,19 @@ def ai_investigator():
 
 # UI
 def main():
-        tab1, tab2, tab3, tab4= st.tabs(["Meal Entry Form", "Symptoms Logging", "Data Visualization and Analysis", "AI Investigator (WIP)"])
+        tab1, tab2, tab3, tab4, tab5 = st.tabs(["Meal Entry Form", "Symptoms Logging", "Emotion Logging", "Data Visualization and Analysis", "AI Investigator (WIP)"])
         with tab1:
             log_meal()
         with tab2:
             log_symptom()
         with tab3:
+            log_emotion()
+        with tab4:
             meal_data = pd.read_csv("data/food_entries.csv")
             symptoms_data = pd.read_csv("data/symptoms.csv")
-            visualize_data(meal_data, symptoms_data)
-        with tab4:
+            emotions_data = pd.read_csv("data/emotions.csv")
+            visualize_data(meal_data, symptoms_data, emotions_data)
+        with tab5:
             ai_investigator()
 
 if __name__ == "__main__":

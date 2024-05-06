@@ -32,6 +32,11 @@ def log_meal():
         new_entry_df.to_csv("data/food_entries.csv", mode='a', header=not os.path.exists("data/food_entries.csv"), index=False)
         st.success("Meal logged successfully!")
 
+    # Download button
+    meal_data = pd.read_csv("data/food_entries.csv")
+    st.download_button(label="Download Food Entry Data as CSV", data=meal_data.to_csv(index=False), file_name="food_entries.csv")
+    st.dataframe(meal_data)
+
 
 def log_symptom():
     st.subheader("Symptoms Logging")
@@ -52,6 +57,10 @@ def log_symptom():
         new_symptom_df.to_csv("data/symptoms.csv", mode='a', header=not os.path.exists("data/symptoms.csv"), index=False)
         st.success("Symptom logged successfully!")
 
+    # Download button
+    symptom_data = pd.read_csv("data/symptoms.csv")
+    st.download_button(label="Download Symptom Data as CSV", data=symptom_data.to_csv(index=False), file_name="symptoms.csv")
+    st.dataframe(symptom_data)
 
 def log_emotion():
     st.subheader("Emotion Logging")
@@ -72,65 +81,67 @@ def log_emotion():
         new_emotion_df.to_csv("data/emotions.csv", mode='a', header=not os.path.exists("data/emotions.csv"), index=False)
         st.success("Emotion logged successfully!")
 
+    # Download button
+    emotion_data = pd.read_csv("data/emotions.csv")
+    st.download_button(label="Download Emotion Data as CSV", data=emotion_data.to_csv(index=False), file_name="emotions.csv")
+    st.dataframe(emotion_data)
+
 
 # Data Visualization and Analysis
 def visualize_data(meal_data, symptoms_data, emotions_data):
     st.subheader("Data Visualization and Analysis")
     
-    # Meal Data Analysis
-    st.write("Meal Entries Data")
-    st.write(meal_data.describe())  # Basic statistics
-    st.write("Meal Types Distribution")
-    st.write(meal_data['meal_type'].value_counts())  # Count of meal types
-    st.write("Top 5 Most Consumed Foods")
-    st.write(meal_data['food_consumed'].value_counts().head())  # Most consumed foods
-
-    # Visualize Meal Types Distribution
-    st.write("Meal Types Distribution")
-    meal_type_counts = meal_data['meal_type'].value_counts()
-    fig, ax = plt.subplots(figsize=(8, 6))
-    sns.barplot(x=meal_type_counts.index, y=meal_type_counts.values, ax=ax)
-    ax.set_xlabel("Meal Type")
-    ax.set_ylabel("Count")
-    ax.set_title("Distribution of Meal Types")
-    st.pyplot(fig)
-
-    # Symptom Data Analysis
-    st.write("Symptoms Data")
-    st.write(symptoms_data.describe())  # Basic statistics
-    st.write("Symptom Types Distribution")
-    st.write(symptoms_data['symptom_type'].value_counts())  # Count of symptom types
-
-    # Visualize Symptom Types Distribution
-    st.write("Symptom Types Distribution")
-    symptom_type_counts = symptoms_data['symptom_type'].value_counts()
-    fig, ax = plt.subplots(figsize=(8, 6))
-    sns.barplot(x=symptom_type_counts.index, y=symptom_type_counts.values, ax=ax)
-    ax.set_xlabel("Symptom Type")
-    ax.set_ylabel("Count")
-    ax.set_title("Distribution of Symptom Types")
-    st.pyplot(fig)
-
-    # Emotion Data Analysis
-    st.write("Emotions Data")
-    st.write(emotions_data.describe())  # Basic statistics
-    st.write("Emotion Types Distribution")
-    st.write(emotions_data['emotion_type'].value_counts())  # Count of symptom types
-
-    # Time-Series Analysis
-    st.write("Time-Series Analysis")
+    # Convert timestamps
     meal_data['timestamp'] = pd.to_datetime(meal_data['timestamp'])
     symptoms_data['timestamp'] = pd.to_datetime(symptoms_data['timestamp'])
-
-    # Plot frequency of meal entries and symptom occurrences over time
+    emotions_data['timestamp'] = pd.to_datetime(emotions_data['timestamp'])
+    
+    # Combine data for correlation analysis
+    combined_data = pd.merge(meal_data, symptoms_data, how='outer', on='timestamp').merge(emotions_data, how='outer', on='timestamp')
+    
+    # Time Series Analysis
+    st.write("Time Series Analysis")
     fig, ax = plt.subplots(figsize=(12, 6))
     ax.plot(meal_data['timestamp'], meal_data.index, label="Meal Entries")
     ax.plot(symptoms_data['timestamp'], symptoms_data.index, label="Symptom Occurrences")
+    ax.plot(emotions_data['timestamp'], emotions_data.index, label="Emotion Occurrences")
     ax.set_xlabel("Date")
     ax.set_ylabel("Frequency")
-    ax.set_title("Frequency of Meal Entries and Symptom Occurrences Over Time")
+    ax.set_title("Frequency of Meal, Symptom, and Emotion Entries Over Time")
     ax.legend()
     ax.grid(True)
+    st.pyplot(fig)
+
+    # Correlation Analysis
+    st.write("Correlation Analysis")
+    combined_data_corr = combined_data.corr(numeric_only=True)
+    st.write(combined_data_corr)
+    
+    fig, ax = plt.subplots(figsize=(10, 8))
+    sns.heatmap(combined_data_corr, annot=True, cmap='coolwarm', ax=ax)
+    ax.set_title("Correlation Heatmap")
+    st.pyplot(fig)
+
+    # Meal Type vs Symptom and Emotion Severity
+    st.write("Meal Type vs Symptom and Emotion Severity")
+    meal_severity = pd.merge(meal_data, symptoms_data[['timestamp', 'severity']], on='timestamp', how='left')
+    meal_severity = pd.merge(meal_severity, emotions_data[['timestamp', 'severity']], on='timestamp', suffixes=('_symptom', '_emotion'), how='left')
+
+    # Drop rows with missing values in required columns
+    meal_severity = meal_severity.dropna(subset=['meal_type', 'severity_symptom', 'severity_emotion'])
+
+    fig, ax = plt.subplots(figsize=(10, 6))
+    sns.boxplot(x='meal_type', y='severity_symptom', data=meal_severity, ax=ax)
+    ax.set_title("Meal Type vs Symptom Severity")
+    ax.set_xlabel("Meal Type")
+    ax.set_ylabel("Severity")
+    st.pyplot(fig)
+    
+    fig, ax = plt.subplots(figsize=(10, 6))
+    sns.boxplot(x='meal_type', y='severity_emotion', data=meal_severity, ax=ax)
+    ax.set_title("Meal Type vs Emotion Severity")
+    ax.set_xlabel("Meal Type")
+    ax.set_ylabel("Severity")
     st.pyplot(fig)
 
 def ai_investigator():
